@@ -114,6 +114,8 @@ Here is the histogram plotted:
  
 After looking at the histogram I decided to set the threshold to 1.7 since it give me a good balance between removing the false positives while at the same time captures most of the highly confident prediction. This threshold performed the best when I tested the pipeline on the video stream. To automate the process of testing the `decision_function` and `heat_map` thresholds I created the `run_pipeline` function which runs the pipeline on a particular video and takes in both thresholds as parameters. I ran this functions with several metaparameters combinations on the last cell of the notebook.
 
+Third, after testing the pipeline on a video I noticed that the it failed to classify some obvious true positives. In order, to improve the classifier accuracy I took samples of car and non_car images from the `test_images` as additional training/testing data. This improve the classifier accuracy on most of the true positive cases.
+
 Finally, in order to only keep the most highly confident classifications I decided to keep the positive classified windows on a rolling window array. This rolling window keep track of the positive classifications over a certain amount of frames. I apply the heatmap and threshold on the whole rolling window array and increase the threshold overlap to 10.
 
 
