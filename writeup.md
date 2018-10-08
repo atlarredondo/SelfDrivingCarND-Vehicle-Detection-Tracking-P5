@@ -74,7 +74,7 @@ After the training stage is done, I decided to test the model with the testing s
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-For the window searching I decided to add several window rows at different scales. I started by creating a row of windows of 20px by 20 px and place them in the center of the horizon where cars on a small scale are visible. After that I manually increase the scale and window placement of a second row of windows, this time aiming for cars at a bigger size. I repeated this process with the 2, 4, 5, 6, 7, 8, 10, 12 scale factors. At each of the scales the start and end place on the y axis was also modified to make the window appear on the center of the horizon even though its size increased. This modification was implemented using the `y_shift` variable on the python notebook. I also overlapped the windows at a 40%.
+For the window searching I decided to add several window rows at different scales. I started by creating a row of windows of 32px by 32px and place them in the center of the horizon where cars on a small scale are visible. After that I manually increase the scale and window placement of a second row of windows, this time aiming for cars at a bigger size. I repeated this process with the 2, 3, 4 and 6 scale factors, to obtain windows of(64, 64), (96, 96), (128, 128) and (192, 192). At each of the scales the start and end place on the y axis was also modified to make the window appear on the center of the horizon even though its size increased. This modification was implemented using the `y_shift` variable on the python notebook. I also overlapped the windows at a 90% overlap ratio.
 The code for sliding windows is located on the 17th cell on the notebook
 Finally, I tested the windows using the images on the `test_images` folder.
 
@@ -101,7 +101,7 @@ Here are some example images:
 ### Video Implementation
 
 #### 1. Provide a link to your final video output.  Your pipeline should perform reasonably well on the entire project video (somewhat wobbly or unstable bounding boxes are ok as long as you are identifying the vehicles most of the time with minimal false positives.)
-I uploaded my video to youtube and can be found here: https://youtu.be/ft_8dBt5vrk
+I uploaded my video to youtube and can be found here: https://youtu.be/6RgMlADUwaI
 
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
@@ -112,9 +112,10 @@ Second, I was getting a lot of false positives at random scales and places on my
 Here is the histogram plotted:
  ![alt text][image6]
  
-After looking at the histogram I decided to set the threshold to 450 since it give me a good balance between removing the false positives while at the same time captures most of the highly confident prediction. This threshold performed the best when I tested the pipeline on the video stream. 
+After looking at the histogram I decided to set the threshold to 1.7 since it give me a good balance between removing the false positives while at the same time captures most of the highly confident prediction. This threshold performed the best when I tested the pipeline on the video stream. To automate the process of testing the `decision_function` and `heat_map` thresholds I created the `run_pipeline` function which runs the pipeline on a particular video and takes in both thresholds as parameters. I ran this functions with several metaparameters combinations on the last cell of the notebook.
 
-Finally, in order to only keep the most highly confident classifications I decided to keep the positive classified windows on a rolling window array. This rolling window keep track of the positive classifications over a certain amount of frames. I apply the heatmap and threshold on the whole rolling window array and increase the threshold overlap to 15. 
+Finally, in order to only keep the most highly confident classifications I decided to keep the positive classified windows on a rolling window array. This rolling window keep track of the positive classifications over a certain amount of frames. I apply the heatmap and threshold on the whole rolling window array and increase the threshold overlap to 10.
+
 
 Here is are some images of the heatmaps on test images:
  ![alt text][image7]
@@ -129,6 +130,6 @@ Here is are some images of the heatmaps on test images:
 
 Most of the issues that I faced on this project were related to filtering false positives as described on the previous section. However, I would like to add that throughout the project my other biggest issue was to stabilization and location of the car boxes. I believe that this was caused by some false positives that made it through the pipeline and the car position differences on each frame.
 I think that false positive getting solved with a more accurate classifier using advanced techniques such as deep learning, however this might cause the pipeline to be slower. In addition, finding the correct sliding windows on an image was a hard problem for me. There were times were the classifier had a hard time identifying an image due incorrect window position. This problem can also be resolved with some other advanced deep learning techniques, where the windows selection and classification can happen on the same step.
-Also, cars tend to move on a particular direction on the video stream. Adding additional information to predict where the car might be moving given the previous frames can result on a huge perfornace improvement. 
+Also, cars tend to move on a particular direction on the video stream. Adding additional information to predict where the car might be moving given the previous frames can result on a huge performance improvement. 
 
-Finally, I found that my pipeline completely failed when the road changed colors. This might be because of the way I trained the classifier and the data used to train it. I believe that a more robust training dataset and selecting more general features can help on making the classifer more robust.
+Finally, I found that my pipeline completely failed when the road changed colors. This might be because of the way I trained the classifier and the data used to train it. I believe that a more robust training dataset and selecting more general features can help on making the classifier more robust.
